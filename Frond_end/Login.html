@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Ofertas Staffing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .welcome-message {
+            margin-bottom: 30px;
+        }
+        
+        .welcome-message h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-message p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .login-button {
+            background-color: #2d5aa8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        
+        .login-button:hover {
+            background-color: #1e3d7a;
+        }
+        
+        .login-button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="welcome-message">
+            <h1>¡Bienvenido!</h1>
+            <p>Ing Preventa</p>
+        </div>
+        <button class="login-button" onclick="iniciarSesion()">Iniciar Sesión</button>
+    </div>
+
+    <script>
+        function iniciarSesion() {
+            window.location.href = './index.html';
+        }
+    </script>
+    <script>
+        // Login keeps only the start button; no logout footer here.
+        function iniciarSesion() { window.location.href = './index.html'; }
+    </script>
+</body>
+</html>
