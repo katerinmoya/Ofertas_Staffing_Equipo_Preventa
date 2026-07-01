@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Perfiles Seleccionados - Ofertas Staffing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            background-color: #2d5aa8;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .back-button:hover {
+            background-color: #1e3d7a;
+        }
+        
+        .title {
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .search-container {
+            margin-bottom: 25px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .search-input::placeholder {
+            color: #999;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #2d5aa8;
+            box-shadow: 0 0 5px rgba(45, 90, 168, 0.2);
+        }
+        
+        .perfiles-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+        }
+        
+        .perfil-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-left: 4px solid #2d5aa8;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .perfil-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .perfil-item.selected {
+            background-color: #e3f2fd;
+        }
+        
+        .perfil-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .perfil-name {
+            flex: 1;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .perfil-checkmark {
+            width: 30px;
+            height: 30px;
+            background-color: #2d5aa8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        
+        .perfil-checkmark.hidden {
+            display: none;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-anterior {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-anterior:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-guardar {
+            background-color: #2d5aa8;
+            color: white;
+        }
+        
+        .btn-guardar:hover {
+            background-color: #1e3d7a;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .perfil-item.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="irAnterior()">← Anterior</button>
+            <div class="title">Vista Perfiles Seleccionados</div>
+            <div style="width: 80px;"></div>
+        </div>
+
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="buscarPerfil" 
+                placeholder="Buscar perfil..."
+            >
+        </div>
+
+        <div class="perfiles-list" id="perfilesList"></div>
+
+        <div class="button-container">
+            <button class="btn btn-anterior" onclick="irAnterior()">Anterior</button>
+            <button class="btn btn-guardar" onclick="guardarPerfiles()">Guardar</button>
+        </div>
+    </div>
+
+    <script>
+    const perfilesData = `ADMINISTRADOR BASE DATOS ESTANDAR	9208000	13410428	258937be-b770-4123-a9df-3f757f513919
+ADMINISTRADOR BASE DATOS JUNIOR	3400000	5262532	65fa0b79-b6e1-4874-bcbe-4492b866f92b
+ADMINISTRADOR BASE DATOS L3	16900000	24201314	01454e77-4e48-43c0-9697-245caeb5fd4f
+ADMINISTRADOR BASE DE DATOS N2	9842600	14300618	5b318d1c-724b-4594-b62c-74885f787bb0
+ADMINISTRADOR BASES DATOS JR	3097500	4838173	83a6d230-3229-4587-a3e2-cca0d5df7a34
+ADMINISTRADOR BASES DATOS JUNIOR	3038000	4754721	aa3b6575-ca13-4639-879f-953b876b978c
+ADMINISTRADOR BASES DE DATOS	6157250	9130638	9f80d540-da0c-47c4-991f-787756b0fd86
+ADMINISTRADOR BASES DE DATOS ESTANDAR	8050000	11785898	e18838c6-dcb5-4e58-92dc-1aad8f8461ee
+ADMINISTRADOR BASES DE DATOS JUNIOR	5245333	7851274	d74b53f6-55e4-4710-9a94-942bb6742fac
+ADMINISTRADOR BASES DE DATOS N1	6100000	9050329	379bd29d-0719-4ef0-8d05-60db30159455
+ADMINISTRADOR BASES DE DATOS SENIOR	8050000	11785898	29ea996f-8052-4bca-a26b-baa8550a2731
+ANALISTA BI	4648000	7013304	6b384b90-0ebf-490e-a49e-29d5796deb3a
+ANALISTA BI ESTANDAR	4147000	6310501	89b19a7d-17bd-46f0-a967-43725bd2ccf9
+ANALISTA AUTOMATIZACION ESTANDAR	5533750	8255860	4d77a2f9-19f2-4448-b2f1-c69f5bb82d91
+ANALISTA AUTOMATIZACION JUNIOR	4091333	6232423	28ff8b64-175b-403e-b167-7f711487c703
+ANALISTA AUTOMATIZACION SENIOR	6922000	10203450	b41654e8-b395-4abb-a13b-16675ede7465
+ANALISTA ASEGURAMIENTO CALIDAD	2662000	4227238	f004a1a8-c87e-4956-b56e-265cc0a177f4
+ANALISTA ABAP	3813000	5841932	71b00239-9970-4769-8d65-d8bc0e4212c8
+ADMINISTRADOR PROYECTOS SENIOR BILINGÜE	12000000	17327205	e5db0d17-8741-4a4a-b79a-bac07a412c9a`;
+
+    let perfiles = [];
+
+    const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:5000' : '';
+
+    async function fetchPerfiles(query = '') {
+        const perfilesList = document.getElementById('perfilesList');
+        perfilesList.innerHTML = '<div class="no-results">Cargando perfiles...</div>';
+
+        try {
+            const response = await fetch(`${API_BASE}/api/perfiles?q=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error('Error cargando perfiles');
+            perfiles = await response.json();
+            perfiles = perfiles.map((perfil, index) => ({ ...perfil, seleccionado: false, id: perfil.id || index + 1 }));
+            renderPerfiles(query);
+        } catch (error) {
+            console.error(error);
+            perfilesList.innerHTML = '<div class="no-results">No se pudieron cargar los perfiles. Intenta nuevamente.</div>';
+        }
+    }
+
+    function renderPerfiles(filtro = '') {
+        const perfilesList = document.getElementById('perfilesList');
+        perfilesList.innerHTML = '';
+
+        const perfilesFiltrados = perfiles.filter(p => p.nombre.toLowerCase().includes(filtro.toLowerCase()));
+
+        if (perfilesFiltrados.length === 0) {
+            perfilesList.innerHTML = '<div class="no-results">No se encontraron perfiles</div>';
+            return;
+        }
+
+        perfilesFiltrados.forEach(perfil => {
+            const perfilDiv = document.createElement('div');
+            perfilDiv.className = `perfil-item ${perfil.seleccionado ? 'selected' : ''} perfil-${perfil.id}`;
+            perfilDiv.innerHTML = `
+                <input
+                    type="checkbox"
+                    class="perfil-checkbox"
+                    id="checkbox-${perfil.id}"
+                    ${perfil.seleccionado ? 'checked' : ''}
+                    onchange="togglePerfil(${perfil.id}, this)"
+                >
+                <label for="checkbox-${perfil.id}" class="perfil-name">${perfil.nombre}</label>
+                <div class="perfil-checkmark ${perfil.seleccionado ? '' : 'hidden'}" id="checkmark-${perfil.id}">
+                    ✓
+                </div>
+            `;
+            perfilesList.appendChild(perfilDiv);
+        });
+    }
+
+    function togglePerfil(id, checkbox) {
+        const perfil = perfiles.find(p => p.id === id);
+        if (perfil) {
+            perfil.seleccionado = checkbox.checked;
+            const checkmark = document.getElementById(`checkmark-${id}`);
+            const perfilDiv = document.querySelector(`.perfil-${id}`);
+
+            if (checkbox.checked) {
+                checkmark.classList.remove('hidden');
+                perfilDiv.classList.add('selected');
+            } else {
+                checkmark.classList.add('hidden');
+                perfilDiv.classList.remove('selected');
+            }
+        }
+    }
+
+    function irAnterior() {
+        window.location.href = './index.html';
+    }
+
+    async function guardarPerfiles() {
+        const perfilesSeleccionados = perfiles.filter(p => p.seleccionado);
+
+        if (perfilesSeleccionados.length === 0) {
+            alert('Por favor selecciona al menos un perfil');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/seleccionados', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ perfiles: perfilesSeleccionados })
+            });
+            if (!response.ok) throw new Error('Error guardando perfiles seleccionados');
+            localStorage.setItem('perfilesSeleccionados', JSON.stringify(perfilesSeleccionados));
+            window.location.href = './Seleccionados.html';
+        } catch (error) {
+            console.error(error);
+            alert('No se pudieron guardar los perfiles seleccionados. Intenta nuevamente.');
+        }
+    }
+
+    document.getElementById('buscarPerfil').addEventListener('input', function (e) {
+        fetchPerfiles(e.target.value);
+    });
+
+    fetchPerfiles();
+    </script>
+    <footer style="max-width:900px;margin:20px auto 40px;display:flex;justify-content:flex-end;gap:10px;">
+        <button style="background:#dc3545;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </footer>
+
+    <script src="./common.js"></script>
+</body>
+</html>

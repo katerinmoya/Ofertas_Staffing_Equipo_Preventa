@@ -1,0 +1,51 @@
+{
+  "clienteDatos": {
+    "nombreCliente": "hyeryghsw",
+    "nit": "hearhetd",
+    "correocorporativo": "JEFE@RAMO.COM",
+    "representante": "fulanito de tal",
+    "codigoSalesforce": "123445",
+    "nombreComercial": "Suly Yasmin Ramirez Valero",
+    "correoComercial": "ramirez@hitss.com",
+    "nombrePreventa": "Marlon Ivan Gualdrono Diaz",
+    "correoPreventa": "gualdronm@hitss.com",
+    "mesesContrato": "",
+    "tipoContrato": "Indefinido"
+  },
+  "perfilesSeleccionadosFinal": [
+    {
+      "uuid": "65fa0b79-b6e1-4874-bcbe-4492b866f92b",
+      "nombre": "ADMINISTRADOR BASE DATOS JUNIOR",
+      "costoEmpresa": 3400000,
+      "margen": 30,
+      "costoMas": 4857142.857142857
+    },
+    {
+      "uuid": "01454e77-4e48-43c0-9697-245caeb5fd4f",
+      "nombre": "ADMINISTRADOR BASE DATOS L3",
+      "costoEmpresa": 16900000,
+      "margen": 30,
+      "costoMas": 24142857.142857146
+    }
+  ],
+  "perfilesDescripcion": [
+    {
+      "uuid": "65fa0b79-b6e1-4874-bcbe-4492b866f92b",
+      "nombre": "ADMINISTRADOR BASE DATOS JUNIOR",
+      "costoEmpresa": 3400000,
+      "experiencia": "",
+      "descripcion": "",
+      "conocimientos": "",
+      "funciones": ""
+    },
+    {
+      "uuid": "01454e77-4e48-43c0-9697-245caeb5fd4f",
+      "nombre": "ADMINISTRADOR BASE DATOS L3",
+      "costoEmpresa": 16900000,
+      "experiencia": "",
+      "descripcion": "",
+      "conocimientos": "",
+      "funciones": ""
+    }
+  ]
+}

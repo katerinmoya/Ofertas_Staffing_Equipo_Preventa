@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Final - Ofertas Staffing</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #111827;
+        }
+        .page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .topbar h1 {
+            font-size: 26px;
+            margin: 0;
+        }
+        .topbar button {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #2563eb;
+            color: white;
+        }
+        .summary-text {
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        .section-title {
+            margin-top: 28px;
+            margin-bottom: 16px;
+            font-size: 18px;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .profile-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+            background: #f9fafb;
+        }
+        .profile-card h2 {
+            margin: 0 0 12px;
+            font-size: 20px;
+            color: #111827;
+        }
+        .profile-info {
+            display: grid;
+            grid-template-columns: minmax(180px, 260px) 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .profile-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .profile-row strong {
+            width: 170px;
+            color: #374151;
+            display: inline-block;
+        }
+        .profile-row span {
+            color: #1f2937;
+        }
+        .profile-detail {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer div {
+            color: #4b5563;
+            font-size: 14px;
+        }
+        .footer button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            cursor: pointer;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <div>
+                <h1>Reporte final de perfiles</h1>
+                <p class="summary-text">Aquí se muestra el detalle completo con los datos del cliente, costos, márgenes y la información extendida de cada perfil seleccionado.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button onclick="descargarPPT()">Descargar PPT</button>
+                <button onclick="window.print()">Imprimir / Guardar</button>
+            </div>
+        </div>
+
+        <div id="reportContainer"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:5000' : '';
+
+        async function descargarPPT() {
+            try {
+                const response = await fetch(`${API_BASE}/api/reporte/pptx`);
+                if (!response.ok) throw new Error('Error descargando PPT');
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = response.headers.get('content-disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'Oferta.pptx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo descargar el PPT. Intenta nuevamente.');
+            }
+        }
+
+        async function fetchReporte() {
+            const container = document.getElementById('reportContainer');
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/reporte`);
+                if (!response.ok) throw new Error('Error cargando reporte');
+                const data = await response.json();
+                renderReporte(data);
+            } catch (error) {
+                console.error(error);
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.innerHTML = '<strong>No se pudo cargar el reporte.</strong><br>Verifica que el backend esté corriendo y vuelve a cargar la página.';
+                document.getElementById('reportContainer').appendChild(empty);
+            }
+        }
+
+        function formatoCOP(valor) {
+            if (valor === null || valor === undefined || valor === '') return '-';
+            const num = Number(valor);
+            return 'COP ' + num.toLocaleString('es-CO', { maximumFractionDigits: 2 });
+        }
+
+        function renderReporte({ clienteDatos = {}, perfiles = [] }) {
+            const container = document.getElementById('reportContainer');
+            container.innerHTML = '';
+
+            if (!clienteDatos.nombreCliente && perfiles.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.innerHTML = '<strong>No se encontraron datos para mostrar.</strong><br>Completa el flujo de selección y descripción antes de llegar al reporte final.';
+                container.appendChild(empty);
+                return;
+            }
+
+            const intro = document.createElement('div');
+            intro.className = 'card';
+            intro.innerHTML = `
+                <div class="section-title">Datos del cliente y proyecto</div>
+                <div class="profile-row"><strong>Cliente:</strong><span>${clienteDatos.nombreCliente || '-'}</span></div>
+                <div class="profile-row"><strong>NIT:</strong><span>${clienteDatos.nit || '-'}</span></div>
+                <div class="profile-row"><strong>Correo corporativo:</strong><span>${clienteDatos.correocorporativo || clienteDatos.correoorporativo || '-'}</span></div>
+                <div class="profile-row"><strong>Representante:</strong><span>${clienteDatos.representante || '-'}</span></div>
+                <div class="profile-row"><strong>Código Salesforce:</strong><span>${clienteDatos.codigoSalesforce || '-'}</span></div>
+                <div class="profile-row"><strong>Preventas:</strong><span>${clienteDatos.nombrePreventa || '-'} ${clienteDatos.correoPreventa ? `- ${clienteDatos.correoPreventa}` : ''}</span></div>
+                <div class="profile-row"><strong>Comercial:</strong><span>${clienteDatos.nombreComercial || '-'} ${clienteDatos.correoComercial ? `- ${clienteDatos.correoComercial}` : ''}</span></div>
+                <div class="profile-row"><strong>Tipo de contrato:</strong><span>${clienteDatos.tipoContrato || '-'}</span></div>
+                <div class="profile-row"><strong>Meses de contrato:</strong><span>${clienteDatos.mesesContrato || (clienteDatos.tipoContrato === 'Indefinido' ? 'Indefinido' : '-')}</span></div>
+            `;
+            container.appendChild(intro);
+
+            const resumen = document.createElement('div');
+            resumen.className = 'card';
+            resumen.innerHTML = `
+                <div class="section-title">Resumen de perfiles seleccionados</div>
+                <p style="margin:0;color:#374151;line-height:1.7;">Total perfiles: <strong>${perfiles.length}</strong></p>
+            `;
+            container.appendChild(resumen);
+
+            perfiles.forEach(perfilFinal => {
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.innerHTML = `
+                    <h2>Perfil: ${perfilFinal.nombre}</h2>
+                    <div class="profile-info">
+                        <div>
+                            <div class="profile-row"><strong>Costo empresa:</strong><span>${formatoCOP(perfilFinal.costoEmpresa)}</span></div>
+                            <div class="profile-row"><strong>Margen %:</strong><span>${perfilFinal.margen || '-'}</span></div>
+                            <div class="profile-row"><strong>Costo estimado:</strong><span>${formatoCOP(perfilFinal.costoMas)}</span></div>
+                        </div>
+                        <div>
+                            <div class="profile-row"><strong>Experiencia requerida:</strong><span>${perfilFinal.experiencia || '-'}</span></div>
+                            <div class="profile-row"><strong>Descripción del perfil:</strong><span>${perfilFinal.descripcion || '-'}</span></div>
+                            <div class="profile-row"><strong>Experiencia específica:</strong><span>${perfilFinal.experiencia || '-'}</span></div>
+                            <div class="profile-row"><strong>Conocimientos:</strong><span>${perfilFinal.conocimientos || '-'}</span></div>
+                            <div class="profile-row"><strong>Funciones principales:</strong><span>${perfilFinal.funciones || '-'}</span></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            const footer = document.createElement('div');
+            footer.className = 'card footer';
+            footer.innerHTML = `
+                <div>Preventa: ${clienteDatos.nombrePreventa || '-'} ${clienteDatos.correoPreventa ? `- ${clienteDatos.correoPreventa}` : ''}</div>
+                <div>Comercial: ${clienteDatos.nombreComercial || '-'} ${clienteDatos.correoComercial ? `- ${clienteDatos.correoComercial}` : ''}</div>
+                <button onclick="volver()">Regresar</button>
+            `;
+            container.appendChild(footer);
+        }
+
+        function volver() {
+            window.location.href = './Descripcion.html';
+        }
+
+        async function cerrarSesion() {
+            const destino = API_BASE === '' ? '/' : `${API_BASE}/`;
+            // Intenta limpiar el store en el backend si está disponible
+            try {
+                await fetch(`${API_BASE}/api/cliente`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({})
+                });
+                await fetch(`${API_BASE}/api/seleccionados`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ perfiles: [] })
+                });
+                await fetch(`${API_BASE}/api/descripcion`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ perfiles: [] })
+                });
+            } catch (err) {
+                // No crítico si falla (por ejemplo si el servidor no está corriendo)
+                console.warn('No se pudo limpiar el backend:', err);
+            }
+
+            try { localStorage.clear(); sessionStorage.clear(); } catch (e) {}
+            // Redirigir al login
+            if (destino.startsWith('http')) {
+                window.location.href = destino;
+            } else {
+                window.location.href = './Login.html';
+            }
+        }
+
+        fetchReporte();
+    </script>
+    <footer style="max-width:1120px;margin:20px auto 40px;display:flex;justify-content:flex-end;gap:10px;">
+        <button style="background:#2563eb;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;" onclick="generarOfertaNueva()">Generar oferta nueva</button>
+        <button style="background:#dc3545;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </footer>
+
+    <script src="./common.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos del Cliente y Proyecto - Ofertas Staffing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .logout-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+        
+        .form-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .form-section h2 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #2d5aa8;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2d5aa8;
+            box-shadow: 0 0 5px rgba(45, 90, 168, 0.2);
+        }
+        
+        .button-container {
+            grid-column: 1 / -1;
+            text-align: right;
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .save-button {
+            background-color: #2d5aa8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .save-button:hover {
+            background-color: #1e3d7a;
+        }
+        
+        .cancel-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cancel-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Datos del Cliente y Proyecto</h1>
+        </div>
+
+        <form id="clienteProyectoForm">
+            <div class="form-content">
+                <!-- Sección Izquierda -->
+                <div class="form-section">
+                    <h2>Cliente</h2>
+                    
+                    <div class="form-group">
+                        <label for="nombreCliente">Nombre Cliente</label>
+                        <input type="text" id="nombreCliente" name="nombreCliente" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nit">NIT</label>
+                        <input type="text" id="nit" name="nit" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="correocorporativo">Correo corporativo</label>
+                        <input type="text" id="correocorporativo" name="correocorporativo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="representante">Representante de la empresa</label>
+                        <input type="text" id="representante" name="representante" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="codigoSalesforce">Código de Salesforce</label>
+                        <input type="text" id="codigoSalesforce" name="codigoSalesforce" required>
+                    </div>
+                </div>
+
+                <!-- Sección Derecha -->
+                <div class="form-section">
+                    <h2>Proyecto</h2>
+                    
+                    <div class="form-group">
+                        <label for="nombreComercial">Nombre Comercial</label>
+                        <select id="nombreComercial" name="nombreComercial" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Pilar Emilia Rodriguez Rojas" data-email="45111310@claro.com.co">Pilar Emilia Rodriguez Rojas</option>
+                            <option value="Luis Fernando Goyes Guerrero" data-email="goyesl@hitss.com">Luis Fernando Goyes Guerrero</option>
+                            <option value="Luis Fernando Hernandez Gutierrez" data-email="hernandezluig@hitss.com">Luis Fernando Hernandez Gutierrez</option>
+                            <option value="Suly Yasmin Ramirez Valero" data-email="ramirez@hitss.com">Suly Yasmin Ramirez Valero</option>
+                            <option value="Gabriel Salamanca Fernandez" data-email="salamancag@hitss.com">Gabriel Salamanca Fernandez</option>
+                            <option value="Gladys Helena Puentes Diaz" data-email="puentesg@hitss.com">Gladys Helena Puentes Diaz</option>
+                            <option value="Maria Andrea Bohorquez Pareja" data-email="bohorquezm@hitss.com">Maria Andrea Bohorquez Pareja</option>
+                            <option value="Nelcy Yanira Moreno Luque" data-email="morenony@hitss.com">Nelcy Yanira Moreno Luque</option>
+                            <option value="Vanessa Cervantes Davila" data-email="cervantesva@hitss.com">Vanessa Cervantes Davila</option>
+                            <option value="Alfonso Rodriguez" data-email="alfonso.rodriguez@claro.com.co">Alfonso Rodriguez</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Correo Comercial</label>
+                        <input type="text" id="correoComercial" name="correoComercial" readonly style="background-color: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nombrePreventa">Nombre Preventa</label>
+                        <select id="nombrePreventa" name="nombrePreventa" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Jairo Andres Veloza Garibello" data-email="jveloza@hitss.com">Jairo Andres Veloza Garibello</option>
+                            <option value="Camilo Roberto Sanchez Melendez" data-email="sanchezraro@hitss.com">Camilo Roberto Sanchez Melendez</option>
+                            <option value="Albert Brayan Tobon Perdomo" data-email="tobona@hitss.com">Albert Brayan Tobon Perdomo</option>
+                            <option value="Juan Camilo Pacheco Burgos" data-email="pacheco@hitss.com">Juan Camilo Pacheco Burgos</option>
+                            <option value="Marlon Ivan Gualdrono Diaz" data-email="gualdronm@hitss.com">Marlon Ivan Gualdrono Diaz</option>
+                            <option value="Andres Felipe Lara Duran" data-email="laraanfe@hitss.com">Andres Felipe Lara Duran</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Correo Preventa</label>
+                        <input type="text" id="correoPreventa" name="correoPreventa" readonly style="background-color: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mesesContrato">Meses de CONTRATO</label>
+                        <select id="mesesContrato" name="mesesContrato" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="6">6 Meses</option>
+                            <option value="12">12 Meses</option>
+                            <option value="18">18 Meses</option>
+                            <option value="24">24 Meses</option>
+                            <option value="30">30 Meses</option>
+                            <option value="36">36 Meses</option>
+                            <option value="40">40 Meses</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tipoContrato">Tipo de Contrato</label>
+                        <select id="tipoContrato" name="tipoContrato" required>
+                            <option value="Termino Fijo" selected>Termino Fijo</option>
+                            <option value="Indefinido">Indefinido</option>
+                            <option value="Obra">Obra</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="button" class="cancel-button" onclick="cancelar()">Cancelar</button>
+                <button type="submit" class="save-button">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:5000' : '';
+
+        function cerrarSesion() {
+            window.location.href = './Login.html';
+        }
+
+        function cancelar() {
+            document.getElementById('clienteProyectoForm').reset();
+            document.getElementById('mesesContrato').disabled = false;
+        }
+
+        // Event listener para Nombre Comercial
+        document.getElementById('nombreComercial').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const email = selectedOption.getAttribute('data-email') || '';
+            document.getElementById('correoComercial').value = email;
+        });
+
+        // Event listener para Nombre Preventa
+        document.getElementById('nombrePreventa').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const email = selectedOption.getAttribute('data-email') || '';
+            document.getElementById('correoPreventa').value = email;
+        });
+
+        function actualizarMesesContrato() {
+            const mesesSelect = document.getElementById('mesesContrato');
+            const tipo = document.getElementById('tipoContrato').value;
+            if (tipo === 'Indefinido') {
+                mesesSelect.disabled = true;
+                mesesSelect.value = '';
+            } else {
+                mesesSelect.disabled = false;
+                if (tipo === 'Termino Fijo' && !mesesSelect.value) {
+                    mesesSelect.value = '6';
+                }
+            }
+        }
+
+        document.getElementById('tipoContrato').addEventListener('change', actualizarMesesContrato);
+        actualizarMesesContrato();
+
+        document.getElementById('clienteProyectoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const tipoContrato = document.getElementById('tipoContrato').value;
+            const mesesContrato = document.getElementById('mesesContrato').value;
+            
+            if (tipoContrato !== 'Indefinido' && !mesesContrato) {
+                alert('Por favor selecciona los meses de contrato');
+                return;
+            }
+            
+            const formData = {
+                nombreCliente: document.getElementById('nombreCliente').value,
+                nit: document.getElementById('nit').value,
+                correocorporativo: document.getElementById('correocorporativo').value,
+                representante: document.getElementById('representante').value,
+                codigoSalesforce: document.getElementById('codigoSalesforce').value,
+                nombreComercial: document.getElementById('nombreComercial').value,
+                correoComercial: document.getElementById('correoComercial').value,
+                nombrePreventa: document.getElementById('nombrePreventa').value,
+                correoPreventa: document.getElementById('correoPreventa').value,
+                mesesContrato: document.getElementById('mesesContrato').value,
+                tipoContrato: document.getElementById('tipoContrato').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/cliente`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) throw new Error('Error guardando datos del cliente');
+                localStorage.setItem('clienteDatos', JSON.stringify(formData));
+                window.location.href = './Perfiles.html';
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo guardar la información del cliente. Intenta nuevamente.');
+            }
+        });
+    </script>
+    <footer style="max-width:1000px;margin:20px auto 40px;display:flex;justify-content:flex-end;gap:10px;">
+        <button style="background:#dc3545;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </footer>
+
+    <script src="./common.js"></script>
+</body>
+</html>
